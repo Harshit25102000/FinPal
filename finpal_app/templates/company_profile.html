@@ -1,0 +1,59 @@
+ {% extends 'base2.html' %}
+
+{% block title %} {{symb}} {% endblock %}
+
+{% block body %}
+{% load static %}
+
+ <div class="container" style="margin-top:90px;margin-bottom: 50px;">
+                <div class="d-flex justify-content-around" style="margin-top:90px;">
+                    <div class="left">
+                        <div class="naming">
+                            <h2 style="font-weight: bold;color:#02147e">{{name}} ({{symb}})</h2>
+                            <p>Exchange: {{exchange}},Currency: {{currency}}</p>
+                        </div>
+                        <div class="prices d-flex">
+                            <div class="left-price" style="margin-right: 20px;">
+                                <h4 style="font-weight: bold;color:#28568B">108.07-0.76(-5.28%)</h4>
+                                <p>At close: 04:00:00 EST</p>
+                            </div>
+                            <div class="right-price" style="margin-left: 20px;">
+                                <h4 style="font-weight: bold;color:#28568B">108.07-0.76(-5.28%)</h4>
+                                <p>At close: 04:00:00 EST</p>
+                            </div>
+                        </div>
+
+                        <form action="/get_fundamentals/" method="post" onsubmit="this.symbol.value=document.title;">
+                        {% csrf_token %}
+                        <div class="buttons" style="margin-top:20px;">
+                           <input type="hidden" name="symbol" value="" />
+                            <a><button type="submit" class="btn btn-primary" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;">Fundamentals</button></a>
+                        </div>
+                        </form>
+                        <div class="buttons">
+                            <a><button type="button" class="btn btn-primary" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;">Visualization</button></a>
+                        </div>
+                        <div class="buttons">
+                            <a><button type="button" class="btn btn-primary" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;">Help Center</button></a>
+                        </div>
+                        <div class="buttons">
+                            <a><button type="button" class="btn btn-primary" style="margin: auto 26%;
+                                width: 35%;border-radius: 20px; margin-top:20px;background-color: #0000ff;">+ Add to Portfolio</button></a>
+                        </div>
+                    </div>
+
+                    <div class="right" style="width:55%">
+                        <div>
+                            <p style="margin-top:40px;">{{desc}}</p>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% endblock %}

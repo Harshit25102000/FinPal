@@ -1,0 +1,20 @@
+{% extends 'base2.html' %}
+
+{% block title %} FinPal {% endblock %}
+
+{% block body %}
+{% load static %}
+   <div style="margin-top: 140px;margin-bottom: 100px;">
+           <h2 style="text-align: center;margin-bottom: 50px;font-weight: bold;">Search for your Equity</h2>
+           <form action="/company_search/" method="post">
+    {% csrf_token %}
+           <div class="input-group mb-3"   style="margin:auto;width:50%;">
+            <input type="text" class="form-control" name="symbol" placeholder="Enter SYMBOL" aria-label="Enter SYMBOL"
+            aria-describedby="basic-addon2">
+            <div class="input-group-append" style="background-color: #02147e;cursor:pointer">
+              <button class="input-group-text" id="basic-addon2" type="submit"style="color: white;background-color: #02147e;">Search</button>
+            </div>
+          </div>
+          </form>
+        </div>
+        {% endblock %}
