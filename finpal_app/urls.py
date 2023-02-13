@@ -13,6 +13,10 @@ urlpatterns = [
     path("equity_search/", views.equity_search, name="equity_search"),
     path("company_search/", views.company_search, name="company_search"),
     path("get_fundamentals/", views.get_fundamentals, name="get_fundamentals"),
+    path('portfolio/', views.portfolio, name="portfolio"),
+    path('add_portfolio/', views.add_portfolio, name="add_portfolio"),
+    path('del_portfolio/', views.del_portfolio, name="del_portfolio"),
+    path('news/',views.news, name="news"),
 
 
 

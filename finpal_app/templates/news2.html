@@ -1,0 +1,42 @@
+{% extends 'base1.html' %}
+
+{% block title %} FinPal {% endblock %}
+
+{% block body %}
+{% load static %}
+
+
+
+      <div class="container">
+        <div class="row" style="margin-top:40px;">
+        {% for i in out %}
+          <div class="col-md-3">
+            <a href={{i.image.webpageUrl}} target="_blank">
+              <div class="card"
+              style="border:none;background-color:#f2f2f2;cursor:pointer;margin-top:5px;margin-bottom:5px">
+                <div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+                  <img src="{{i.image.url}}" class="img-fluid" style="width:306px; height:182px;"/>
+                  <a href={{i.image.webpageUrl}} target="_blank">
+                    <div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+                  </a>
+                </div>
+                <div class="card-body">
+                  <h5 class="card-title">{{i.title|truncatechars:50}}</h5>
+                  <p class="card-text">{{i.description|truncatechars:100}}</p>
+
+                </div>
+              </div>
+            </a>
+          </div>
+      {% endfor %}
+
+
+
+
+        </div>
+
+      </div>
+
+
+
+{% endblock %}

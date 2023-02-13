@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 import requests
-
+from datetime import datetime, timedelta
 
 def index(request):
 
@@ -65,7 +65,31 @@ def handle_signup(request):
 def user_home(request):
     if request.user.is_authenticated:
 
-        return render(request, 'user_home.html')
+        N_DAYS_AGO = 1
+
+        today = datetime.now()
+        n_days_ago = today - timedelta(days=N_DAYS_AGO)
+        today = str(today)
+        n_days_ago = str(n_days_ago)
+        url = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI"
+
+        querystring = {"q": "finance", "pageNumber": "1", "pageSize": "10", "autoCorrect": "true",
+                       "fromPublishedDate": n_days_ago,
+                       "toPublishedDate": today}
+
+        headers = {
+            "X-RapidAPI-Key": "5df3ca1e69msh48ca23362eb42e8p11e1fdjsn715f9fad8852",
+            "X-RapidAPI-Host": "contextualwebsearch-websearch-v1.p.rapidapi.com"
+        }
+
+        response = requests.request("GET", url, headers=headers, params=querystring)
+
+        a = response.json()
+        z = a['value']
+        out = z[0:8]
+
+        context={'out':out}
+        return render(request, 'user_home.html',context)
     else:
         messages.error(request, "Please log in first")
         return redirect('login')
@@ -119,7 +143,7 @@ def company_search(request):
     if request.user.is_authenticated:
 
         if request.method == 'POST':
-            symbol= request.POST['symbol']
+            symbol = request.POST.get('symbol', '')
 
 
             try:
@@ -133,7 +157,14 @@ def company_search(request):
                 desc=data['Description']
                 exchange=data['Exchange']
                 currency=data['Currency']
-                context={'symb':symb,'name':name,'desc':desc,'exchange':exchange,'currency':currency}
+                check = Portfolio.objects.filter(user=request.user, symbol=symbol)
+                print(check)
+                if len(check)!=0:
+                    remove = True
+                else:
+                    remove = False
+                print(remove)
+                context={'symb':symb,'name':name,'desc':desc,'exchange':exchange,'currency':currency,'remove':remove}
                 return render(request, 'company_profile.html',context)
             except:
                 return render(request, 'no_result.html')
@@ -144,6 +175,7 @@ def company_search(request):
         messages.error(request, "Please log in first")
         return redirect('login')
 
+@login_required(login_url='/login/')
 def get_fundamentals(request):
     if request.user.is_authenticated:
 
@@ -167,8 +199,8 @@ def get_fundamentals(request):
                 exchange=data['Exchange']
                 currency=data['Currency']
                 list=[(k, v) for k, v in fund.items()]
-
-                context={'symb':symb,'name':name,'list':list,'exchange':exchange,'currency':currency}
+               
+                context={'symb':symb,'name':name,'list':list,'exchange':exchange,'currency':currency,}
                 return render(request, 'fundamentals.html',context)
             except:
                 return render(request, 'no_result.html')
@@ -178,6 +210,92 @@ def get_fundamentals(request):
     else:
         messages.error(request, "Please log in first")
         return redirect('login')
+
+@login_required(login_url='/login/')
+def portfolio(request):
+    if request.user.is_authenticated:
+        list=Portfolio.objects.filter(user=request.user)
+        if len(list)==0:
+
+            return render(request, 'empty_portfolio.html')
+        else:
+            context={'list':list}
+            return render(request, 'portfolios.html',context)
+    else:
+        messages.error(request, "Please log in first")
+        return redirect('login')
+
+@login_required(login_url='/login/')
+def add_portfolio(request):
+    if request.user.is_authenticated:
+
+        if request.method == 'POST':
+            symbol= request.POST['symbol']
+
+            a=Portfolio.objects.create(user=request.user, symbol=symbol)
+            a.save()
+            messages.success(request, "Added to Portfolio")
+            return redirect('portfolio')
+
+
+        else:
+            return render(request, 'error404.html')
+    else:
+        messages.error(request, "Please log in first")
+        return redirect('login')
+
+@login_required(login_url='/login/')
+def del_portfolio(request):
+    if request.user.is_authenticated:
+
+        if request.method == 'POST':
+            symbol= request.POST['symbol']
+
+            a=Portfolio.objects.filter(user=request.user, symbol=symbol).first()
+            a.delete()
+            messages.success(request, "Removed from Portfolio")
+            return redirect('portfolio')
+
+
+        else:
+            return render(request, 'error404.html')
+    else:
+        messages.error(request, "Please log in first")
+        return redirect('login')
+
+
+
+def news(request):
+
+
+        N_DAYS_AGO = 1
+
+        today = datetime.now()
+        n_days_ago = today - timedelta(days=N_DAYS_AGO)
+        today = str(today)
+        n_days_ago = str(n_days_ago)
+        url = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/search/NewsSearchAPI"
+
+        querystring = {"q": "finance", "pageNumber": "1", "pageSize": "20", "autoCorrect": "true",
+                       "fromPublishedDate": n_days_ago,
+                       "toPublishedDate": today}
+
+        headers = {
+            "X-RapidAPI-Key": "5df3ca1e69msh48ca23362eb42e8p11e1fdjsn715f9fad8852",
+            "X-RapidAPI-Host": "contextualwebsearch-websearch-v1.p.rapidapi.com"
+        }
+
+        response = requests.request("GET", url, headers=headers, params=querystring)
+
+        a = response.json()
+        z = a['value']
+
+
+        context = {'out': z}
+        if request.user.is_authenticated:
+            return render(request, 'news.html', context)
+        else:
+            return render(request, 'news2.html', context)
 
 
 

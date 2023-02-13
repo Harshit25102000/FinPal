@@ -1,0 +1,44 @@
+{% extends 'base2.html' %}
+
+{% block title %} Log In {% endblock %}
+
+
+
+{% block body %}
+{% load static %}
+
+<script type="text/javascript">
+  function func() {
+    document.getElementById("add").style.display="none";
+    document.getElementById("form").style.display="block";
+
+  }
+</script>
+
+ <div class="container">
+        <div class="block" style="background-color: white;margin:12% 6%; padding:8% 0% 2%;">
+          <div id="add">
+            <p style="text-align-last: center;
+                font-size: 17px;
+                font-weight: bold;">Your list is empty. Add symbols to get relevant results and predections.</p>
+            <a><button type="button" class="btn btn-primary" style="margin: auto 42%;
+                    width: 15%; margin-top:20px;" onclick="func()">+ Add</button></a>
+          </div>
+          <form action="/company_search/" method="post" id="form">
+        {% csrf_token %}
+            <div class="input-group mb-3" style="margin:auto;width:50%;">
+              <input type="text" class="form-control" name="symbol" placeholder="Enter SYMBOL to add" aria-label="Enter SYMBOL to add"
+                aria-describedby="basic-addon2">
+              <div class="input-group-append" style="background-color: #0d6efd;cursor:pointer">
+                <button class="input-group-text" id="basic-addon2" type="submit"
+                  style="color: white;background-color: #0d6efd">Search</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+
+
+{% endblock %}

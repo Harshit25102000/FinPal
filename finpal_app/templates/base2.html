@@ -44,7 +44,8 @@
 
         <div class="logo">
           <h1
-          class="text-light"><a href="{% url 'Home' %}"><span><img src="{% static 'assets/img/logo.png' %}" ></span></a></h1>
+          class="text-light"><a
+          href="{% url 'user_home' %}"><span><img src="{% static 'assets/img/logo.png' %}" ></span></a></h1>
           <!-- Uncomment below if you prefer to use an image logo -->
           <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
         </div>
@@ -53,8 +54,8 @@
           <ul>
             <li><a class="nav-link scrollto" href="{% url 'user_home' %}">Home</a></li>
             <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
-            <li><a class="nav-link scrollto" href="login.html">My Portfolio</a></li>
-            <li><a class="nav-link scrollto " href="index.html#portfolio">News</a></li>
+            <li><a class="nav-link scrollto" href="{% url 'portfolio' %}">My Portfolio</a></li>
+            <li><a class="nav-link scrollto " href="{% url 'news' %}">News</a></li>
             <li><a class="nav-link scrollto" href="index.html#pricing">Support</a></li>
                    <li class="dropdown"><a href="#"><span>My Account</span> <i class="bi bi-chevron-down"></i></a>
               <ul>

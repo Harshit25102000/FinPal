@@ -5,6 +5,7 @@
 {% block body %}
 {% load static %}
 
+
  <div class="container" style="margin-top:90px;margin-bottom: 50px;">
                 <div class="d-flex justify-content-around" style="margin-top:90px;">
                     <div class="left">
@@ -39,10 +40,28 @@
                             <a><button type="button" class="btn btn-primary" style="margin: auto 21%;
                                 width: 45%;border-radius: 20px; margin-top:20px;">Help Center</button></a>
                         </div>
+                        {% if remove == False %}
+                         <form action="/add_portfolio/" method="post" id="add_portfolio" onsubmit="this.symbol.value=document.title;">
+                        {% csrf_token %}
                         <div class="buttons">
-                            <a><button type="button" class="btn btn-primary" style="margin: auto 26%;
+                             <input type="hidden" name="symbol" id="symbol" value="" />
+                            <a><button type="submit" class="btn btn-primary" style="margin: auto 26%;
                                 width: 35%;border-radius: 20px; margin-top:20px;background-color: #0000ff;">+ Add to Portfolio</button></a>
                         </div>
+                         </form>
+                         {% endif %}
+                         {% if remove == True %}
+                         <form action="/del_portfolio/" method="post" onsubmit="this.symbol.value=document.title;">
+                        {% csrf_token %}
+                        <div class="buttons">
+                         <input type="hidden" name="symbol" value="" />
+                            <a><button type="submit" class="btn btn-primary" style="margin: auto 26%;
+                                width: 35%;border-radius: 20px; margin-top:20px;background-color: #0000ff;">Remove
+                                from Portfolio
+                                </button></a>
+                        </div>
+                         </form>
+                         {% endif %}
                     </div>
 
                     <div class="right" style="width:55%">
