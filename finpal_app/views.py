@@ -318,6 +318,38 @@ def get_support(request):
         ans=a['choices'][0]['text']
         return JsonResponse({'ans':ans})
     else:
-        return HttpResponse("Request method is not a POST")
+        return render(request, 'error404.html')
 
 
+@login_required(login_url='/login/')
+def change_password(request):
+    return render(request, 'change_password.html')
+
+@login_required(login_url='/login/')
+def handle_change_password(request):
+    if request.method == 'POST':
+        email = request.user
+        password = request.POST['password']
+        newpassword = request.POST['newpassword']
+        newpassword2 = request.POST['newpassword2']
+
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            if newpassword != newpassword2:
+                messages.error(request, "Passwords did not match")
+                return redirect('change_password')
+            else:
+                u = User.objects.get(email=email)
+                u.set_password(newpassword)
+                u.save()
+                messages.error(request, "Password changed successfully")
+                return redirect('change_password')
+        else:
+            messages.error(request, "Invalid Credentials, Please try again")
+            return redirect('change_password')
+
+
+
+
+    else:
+        return render(request, 'error404.html')

@@ -19,6 +19,17 @@ urlpatterns = [
     path('news/',views.news, name="news"),
     path('support/', views.support, name="support"),
     path('get_support/', views.get_support, name="get_support"),
+    path('change_password/',views.change_password, name="change_password"),
+    path('handle_change_password/',views.handle_change_password, name="handle_change_password"),
+path('reset_password/',auth_views.PasswordResetView.as_view(template_name="password_reset.html"),
+name="reset_password"),
+path('reset_password_sent/',auth_views.PasswordResetDoneView.as_view(template_name="password_reset_sent.html"),
+name="password_reset_done"),
+path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(
+template_name="password_reset_confirm.html"),
+name="password_reset_confirm"),
+path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(
+template_name="password_reset_complete.html"), name="password_reset_complete"),
 
 
 
