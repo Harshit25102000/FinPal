@@ -28,6 +28,7 @@
 
   <!-- Template Main CSS File -->
   <link href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 
 
 </head>
@@ -56,7 +57,7 @@
             <li><a class="nav-link scrollto" href="index.html#about">About</a></li>
             <li><a class="nav-link scrollto" href="{% url 'portfolio' %}">My Portfolio</a></li>
             <li><a class="nav-link scrollto " href="{% url 'news' %}">News</a></li>
-            <li><a class="nav-link scrollto" href="index.html#pricing">Support</a></li>
+            <li><a class="nav-link scrollto" href="{% url 'support' %}">Support</a></li>
                    <li class="dropdown"><a href="#"><span>My Account</span> <i class="bi bi-chevron-down"></i></a>
               <ul>
                 <li><a href="#">Change Password</a></li>

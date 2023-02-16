@@ -17,6 +17,8 @@ urlpatterns = [
     path('add_portfolio/', views.add_portfolio, name="add_portfolio"),
     path('del_portfolio/', views.del_portfolio, name="del_portfolio"),
     path('news/',views.news, name="news"),
+    path('support/', views.support, name="support"),
+    path('get_support/', views.get_support, name="get_support"),
 
 
 

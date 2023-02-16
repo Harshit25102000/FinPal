@@ -1,0 +1,53 @@
+{% extends 'base2.html' %}
+
+{% block title %} FinPal {% endblock %}
+
+{% block body %}
+
+<script type="text/javascript">
+    $(document).on('submit','#support-form',function(e){
+        e.preventDefault();
+         $('#response').html('Loading...');
+        $.ajax({
+            type:'POST',
+            url:'{% url "get_support" %}',
+            data:
+            {
+                query:$("#query").val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val()
+            },
+             dataType: 'json',
+            success:function(data){
+
+                   $('#query').val('');
+                   $('#response').html(data.ans);
+                    },
+                    error:function(){
+          $('#query').val('');
+                   $('#response').html('Oops we ran into a problem');
+       },
+            })
+        });
+    </script>
+{% load static %}
+      <div class="container" style="margin-top: 50px;width:55%;margin-bottom: 5%;padding:70px 0px 0px 0px" class="mx-auto">
+                <div class="output" style="margin-bottom: 80px;">
+                    <p id="response">Hi I am here to assist you with your doubts , ask me your questions and I will
+                    try my best to clear your doubts</p>
+                </div>
+                <form  method="post" id="support-form">
+    {% csrf_token %}
+           <div class="input-group mb-3">
+            <input type="text" class="form-control" name="query" id="query" placeholder="Enter Query"
+            aria-label="Enter
+            Query"
+            aria-describedby="basic-addon2">
+            <div class="input-group-append" style="background-color: #02147e;cursor:pointer">
+              <button class="input-group-text" id="basic-addon2"
+              type="submit"style="color: white;background-color: #02147e;">Ask Me</button>
+            </div>
+          </div>
+          </form>
+            </div>
+
+  {% endblock %}

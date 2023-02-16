@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate, login, logout
 import requests
 from datetime import datetime, timedelta
-
+import openai
 def index(request):
 
     return render(request, 'index.html')
@@ -300,6 +300,24 @@ def news(request):
 
 
 
+@login_required(login_url='/login/')
+def support(request):
+    return render(request, 'support.html',)
 
+@login_required(login_url='/login/')
+def get_support(request):
+    if request.method == 'POST':
+        query = request.POST.get('query')
+        openai.api_key = "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"
+        a = openai.Completion.create(
+            model="text-davinci-003",
+            prompt=query,
+            max_tokens=2048,
+            temperature=0
+        )
+        ans=a['choices'][0]['text']
+        return JsonResponse({'ans':ans})
+    else:
+        return HttpResponse("Request method is not a POST")
 
 
