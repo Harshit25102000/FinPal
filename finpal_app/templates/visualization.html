@@ -1,0 +1,68 @@
+ {% extends 'base2.html' %}
+
+{% block title %} {{symb}} {% endblock %}
+
+{% block body %}
+{% load static %}
+
+ <div class="container" style="margin-top:90px;margin-bottom: 50px;">
+                <div class="d-flex justify-content-around" style="margin-top:90px;">
+                    <div class="left">
+
+                              <form action="/get_fundamentals/" method="post" onsubmit="this.symbol.value=document.title;">
+                        {% csrf_token %}
+                        <div class="buttons" style="margin-top:20px;">
+                           <input type="hidden" name="symbol" value="" />
+                            <a ><button type="submit" class="btn btn-primary"
+                            style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;">Fundamentals</button></a>
+                        </div>
+                        </form>
+
+                                <div class="dropdown" style="margin-top:20px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Visualization
+  </button>
+<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/1">Daily</a>
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/2">Weekly</a>
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/3">Monthly</a>
+     <a class="dropdown-item" href="/daily_visualization/{{symb}}/4">Interval of 1 min</a>
+      <a class="dropdown-item" href="/daily_visualization/{{symb}}/5">Interval of 5 min</a>
+       <a class="dropdown-item" href="/daily_visualization/{{symb}}/6">Interval of 15 min</a>
+          <a class="dropdown-item" href="/daily_visualization/{{symb}}/7">Interval of 30 min</a>
+             <a class="dropdown-item" href="/daily_visualization/{{symb}}/8">Interval of 60 min</a>
+  </div>
+</div>
+                        <div class="buttons">
+                            <a href="{% url 'support' %}"><button type="button" class="btn btn-primary" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;">Help Center</button></a>
+                        </div>
+                        <div class="buttons">
+                            <a><button type="button" class="btn btn-primary" style="margin: auto 26%;
+                                width: 35%;border-radius: 20px; margin-top:20px;background-color: #0000ff;">+ Add to Portfolio</button></a>
+                        </div>
+
+                    </div>
+
+                    <div class="right" style="width:55%">
+                        <div>
+                            <h3 style="margin-top:40px;">Visualizations of {{symb}} on {{basis}} basis</h3>
+                            {{ fig|safe }}
+                             {{ fig2|safe }}
+                            {{ fig3|safe }}
+                            <h3 style="margin-top:40px;">Financial Indicators</h3>
+                             {{ fig4|safe }}
+                              {{ fig5|safe }}
+                               {{ fig6|safe }}
+                               <h3 style="margin-top:40px;">Candlestick Chart</h3>
+                                    {{ fig7|safe }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% endblock %}

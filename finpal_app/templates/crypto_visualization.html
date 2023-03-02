@@ -1,0 +1,95 @@
+ {% extends 'base2.html' %}
+
+{% block title %} {{symb}} {% endblock %}
+
+{% block body %}
+{% load static %}
+
+<div class="container" style="margin-top:90px;margin-bottom: 50px;">
+                <div class="d-flex justify-content-around" style="margin-top:90px;">
+                    <div class="left">
+
+                          <div class="buttons">
+                            <a href="/crypto_visualization/{{symb}}"><button type="button" class="btn btn-primary"
+                            style="margin: auto 21%;
+                                width: 78%;border-radius: 20px; margin-top:20px;">Visualization</button></a>
+                        </div>
+
+                        <div class="buttons">
+                            <a href="{% url 'support' %}"><button type="button" class="btn btn-primary" style="margin: auto 21%;
+                                width: 78%;border-radius: 20px; margin-top:20px;">Help Center</button></a>
+                        </div>
+                        <div class="buttons">
+                            <a><button type="button" class="btn btn-primary" style="margin: auto 26%;
+                                width: 88%;border-radius: 20px; margin-top:20px;background-color: #0000ff;">+ Add to
+                                Portfolio</button></a>
+                        </div>
+
+                    </div>
+
+                    <div class="right" style="width:55%">
+                        <div>
+                            <h3 style="margin-top:40px;">Visualizations of {{symb}}</h3>
+                            <h4 style="margin-top:20px;">Real Time Updating Price</h4>
+                            <canvas id="myChart" width="400" height="200" style="margin-bottom:30px"></canvas>
+                            {{ fig1|safe }}
+                             {{ fig2|safe }}
+                            {{ fig3|safe }}
+
+                             {{ fig4|safe }}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+ <script>
+
+
+ var label_X = [0];
+var data_Y = [0];
+var data = {
+    labels: label_X,
+    datasets: [
+        {
+            label: "Real Time Live Crypto Price ",
+            fillColor: "rgba(220,220,0,0.5)",
+            strokeColor: "rgba(220,220,0,0.8)",
+            highlightFill: "rgba(220,220,0,0.75)",
+            highlightStroke: "rgba(220,220,0,1)",
+            data: data_Y,
+        }
+    ]
+};
+
+var ctx = document.getElementById("myChart").getContext("2d");
+var myLineChart = new Chart(ctx , {
+    type: "line",
+    data: data,
+});
+
+(function ajaxRequest() {
+  $.ajax('{% url "get_price" %}', {
+    type: 'post',
+    data: {
+     symb:document.title,
+    },
+  })
+    .done(function (data) {
+       data_Y.push(data.y);
+                label_X.push(data.x);
+                 myLineChart.update();
+    })
+    .always(function (data) {
+
+      setTimeout(ajaxRequest, 1000);
+    });
+})();
+
+
+
+</script>
+
+            {% endblock %}

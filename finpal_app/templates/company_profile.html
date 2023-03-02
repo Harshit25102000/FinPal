@@ -10,7 +10,7 @@
                 <div class="d-flex justify-content-around" style="margin-top:90px;">
                     <div class="left">
                         <div class="naming">
-                            <h2 style="font-weight: bold;color:#02147e">{{name}} ({{symb}})</h2>
+                            <h2 style="font-weight: bold;color:#02147e">{{name}} ({{symb}}) {{type}}</h2>
                             <p>Exchange: {{exchange}},Currency: {{currency}}</p>
                         </div>
                         <div class="prices d-flex">
@@ -28,16 +28,34 @@
                         {% csrf_token %}
                         <div class="buttons" style="margin-top:20px;">
                            <input type="hidden" name="symbol" value="" />
-                            <a><button type="submit" class="btn btn-primary" style="margin: auto 21%;
+                            <a ><button type="submit" class="btn btn-primary"
+                            style="margin: auto 21%;
                                 width: 45%;border-radius: 20px; margin-top:20px;">Fundamentals</button></a>
                         </div>
                         </form>
+
+                     <div class="dropdown" style="margin-top:20px;">
+  <button class="btn btn-primary dropdown-toggle" type="button" style="margin: auto 21%;
+                                width: 45%;border-radius: 20px; margin-top:20px;" id="dropdownMenuButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Visualization
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/1">Daily</a>
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/2">Weekly</a>
+    <a class="dropdown-item" href="/daily_visualization/{{symb}}/3">Monthly</a>
+     <a class="dropdown-item" href="/daily_visualization/{{symb}}/4">Interval of 1 min</a>
+      <a class="dropdown-item" href="/daily_visualization/{{symb}}/5">Interval of 5 min</a>
+       <a class="dropdown-item" href="/daily_visualization/{{symb}}/6">Interval of 15 min</a>
+          <a class="dropdown-item" href="/daily_visualization/{{symb}}/7">Interval of 30 min</a>
+             <a class="dropdown-item" href="/daily_visualization/{{symb}}/8">Interval of 60 min</a>
+  </div>
+</div>
+
+
                         <div class="buttons">
-                            <a><button type="button" class="btn btn-primary" style="margin: auto 21%;
-                                width: 45%;border-radius: 20px; margin-top:20px;">Visualization</button></a>
-                        </div>
-                        <div class="buttons">
-                            <a><button type="button" class="btn btn-primary" style="margin: auto 21%;
+                            <a href="{% url 'support' %}"><button type="button" class="btn btn-primary"
+                            style="margin: auto 21%;
                                 width: 45%;border-radius: 20px; margin-top:20px;">Help Center</button></a>
                         </div>
                         {% if remove == False %}
