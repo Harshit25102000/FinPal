@@ -1,8 +1,16 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+import json
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
 # User customization goes down
+
+def validate_json(value):
+    try:
+        json.loads(value)
+    except ValueError:
+        raise ValidationError('Invalid JSON string')
 
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
@@ -52,7 +60,17 @@ class User(AbstractUser):
 class Portfolio(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
     symbol = models.CharField(max_length=100)
+    category=models.CharField(max_length=100,default="equity")
 
 
     def __str__(self):
         return self.symbol
+
+class StockModel(models.Model):
+    symbol = models.CharField(max_length=100)
+    accuracy= models.CharField(max_length=100)
+    model = models.TextField(validators=[validate_json])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Model for {self.symbol}"

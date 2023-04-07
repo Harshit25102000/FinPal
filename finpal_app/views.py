@@ -12,6 +12,11 @@ import requests
 from datetime import datetime, timedelta
 import openai
 import cryptocompare
+## importing of the tensorflow modules
+
+from keras.models import Sequential
+from keras.layers import Dense
+from keras.layers import LSTM
 
 ## importing all the libraries
 
@@ -287,6 +292,12 @@ def get_fundamentals(request):
 
 
             try:
+                check = Portfolio.objects.filter(user=request.user, symbol=symbol)
+                print(check)
+                if len(check) != 0:
+                    remove = True
+                else:
+                    remove = False
                 url = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={symbol}&apikey=THXW5Z2G9JZKTRK4'
                 r = requests.get(url)
                 data = r.json()
@@ -303,7 +314,7 @@ def get_fundamentals(request):
                 currency=data['Currency']
                 list=[(k, v) for k, v in fund.items()]
                
-                context={'symb':symb,'name':name,'list':list,'exchange':exchange,'currency':currency,}
+                context={'symb':symb,'name':name,'list':list,'exchange':exchange,'currency':currency,'remove':remove}
                 return render(request, 'fundamentals.html',context)
             except:
                 return render(request, 'no_result.html')
@@ -323,21 +334,31 @@ def portfolio(request):
             return render(request, 'empty_portfolio.html')
         else:
             context={'list':list}
+            email = str(request.user.email)
+            print(email)
             return render(request, 'portfolios.html',context)
     else:
         messages.error(request, "Please log in first")
         return redirect('login')
 
+
+
+from .tasks import train_stock_model
 @login_required(login_url='/login/')
 def add_portfolio(request):
     if request.user.is_authenticated:
 
         if request.method == 'POST':
             symbol= request.POST['symbol']
-
-            a=Portfolio.objects.create(user=request.user, symbol=symbol)
+            category= request.POST['category']
+            email=str(request.user.email)
+            print(email)
+            args=str(str(symbol)+'&'+str(email))
+            train_stock_model.delay(args)
+            a=Portfolio.objects.create(user=request.user, symbol=symbol,category=category)
             a.save()
-            messages.success(request, "Added to Portfolio")
+            messages.success(request, "Added to Portfolio..You will get an email once the ML model for this is created")
+
             return redirect('portfolio')
 
 
@@ -354,8 +375,10 @@ def del_portfolio(request):
         if request.method == 'POST':
             symbol= request.POST['symbol']
 
-            a=Portfolio.objects.filter(user=request.user, symbol=symbol).first()
+            a=Portfolio.objects.get(user=request.user, symbol=symbol)
+            print("delete request running")
             a.delete()
+
             messages.success(request, "Removed from Portfolio")
             return redirect('portfolio')
 
@@ -411,7 +434,7 @@ def support(request):
 def get_support(request):
     if request.method == 'POST':
         query = request.POST.get('query')
-        openai.api_key = "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"
+        openai.api_key = "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"
         a = openai.Completion.create(
             model="text-davinci-003",
             prompt=query,
@@ -875,6 +898,57 @@ def forex_visualization(request):
 
         else:
             return render(request, 'error404.html')
+    else:
+        messages.error(request, "Please log in first")
+        return redirect('login')
+
+
+def create_dataset(dataset, time_step=1):
+	dataX, dataY = [], []
+	for i in range(len(dataset)-time_step-1):
+		a = dataset[i:(i+time_step), 0]
+		dataX.append(a)
+		dataY.append(dataset[i + time_step, 0])
+	return np.array(dataX), np.array(dataY)
+
+
+
+def get_stock_model(symbol):
+    stock_model = StockModel.objects.filter(symbol=symbol).first()
+    model_text = stock_model.model
+    model_json = json.loads(model_text)
+    model = model_from_json(model_json)
+    model.compile(loss='mean_squared_error', optimizer='adam')  # recompile the model before using it
+    return model
+
+from keras.models import model_from_json
+@login_required(login_url='/login/')
+def make_prediction(request,symb,cat):
+    if request.user.is_authenticated:
+        symbol=symb
+        category=cat
+        stock_model = StockModel.objects.filter(symbol=symbol).first()
+        accuracy = stock_model.accuracy
+        model=get_stock_model(symbol)
+        API_key = '7N58ARN74RCCMY0L'
+
+        outputsize = 'compact'
+
+        typ = "weekly"
+        ts = TimeSeries(key=API_key, output_format='pandas')
+        state = ts.get_weekly_adjusted(symbol)[0]
+        state.reset_index(inplace=True)
+        ## taking the close values for the evaluation
+
+        df = state.reset_index()['4. close']
+        print(df)
+        prediction=model.predict(df)
+        context={'symbol':symbol,'category':category,'prediction':prediction,'accuracy':accuracy}
+        return render(request, 'prediction.html', context)
+
+
+
+
     else:
         messages.error(request, "Please log in first")
         return redirect('login')

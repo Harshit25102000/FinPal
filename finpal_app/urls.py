@@ -26,6 +26,8 @@ urlpatterns = [
     path('daily_visualization/<str:symb>/<int:option>',views.daily_visualization, name="daily_visualization"),
     path('btc_visualization',views.btc_visualization, name="btc_visualization"),
     path('crypto_visualization/<str:symb>',views.crypto_visualization, name="crypto_visualization"),
+    path('make_prediction/<str:symb>/<str:cat>/',views.make_prediction, name="make_prediction"),
+
     path('forex_visualization/', views.forex_visualization, name="forex_visualization"),
     path('get_price/',views.get_price, name="get_price"),
     path('forex/',views.forex, name="forex"),

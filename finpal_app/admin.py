@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import *
 
 admin.site.register(Portfolio)
+admin.site.register(StockModel)
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
     """Define admin model for custom User model with no email field."""

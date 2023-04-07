@@ -22,6 +22,9 @@
               <tr style="cursor: pointer;">
 
                 <td>{{item}}</td>
+                <td>{{item.category}}</td>
+                <td
+                style="text-align:end;"><a href="/make_prediction/{{item}}/{{item.category}}"><button>Predict</button></a></td>
 
               </tr>
             {% endfor %}
