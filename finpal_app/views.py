@@ -352,7 +352,6 @@ def add_portfolio(request):
             symbol= request.POST['symbol']
             category= request.POST['category']
             email=str(request.user.email)
-            print(email)
             args=str(str(symbol)+'&'+str(email))
             train_stock_model.delay(args)
             a=Portfolio.objects.create(user=request.user, symbol=symbol,category=category)
@@ -939,11 +938,34 @@ def make_prediction(request,symb,cat):
         state = ts.get_weekly_adjusted(symbol)[0]
         state.reset_index(inplace=True)
         ## taking the close values for the evaluation
-
+        scaler = MinMaxScaler(feature_range=(0, 1))
         df = state.reset_index()['4. close']
         print(df)
+        df = scaler.fit_transform(np.array(df).reshape(-1, 1))
         prediction=model.predict(df)
-        context={'symbol':symbol,'category':category,'prediction':prediction,'accuracy':accuracy}
+
+        prediction=scaler.inverse_transform(prediction)
+        value=np.mean(prediction)
+
+        #fig = px.line(prediction, x=state['date'], y=state['1. open'], title='Open price of the given forex')
+        #fig_div = plot(fig, output_type='div')
+
+        # Get the number of data points
+        n_points = prediction.shape[0]
+
+        # Create the plotly figure
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x=np.arange(n_points), y=prediction[:, 0], mode='lines'))
+
+        # Set the layout of the plot
+        fig.update_layout(title='Predicted Closing Values ', xaxis_title='Index', yaxis_title='Data')
+
+        # Show the plot
+        fig_div = plot(fig, output_type='div')
+        print(type(prediction))
+        print(prediction.shape)
+        context={'symbol':symbol,'category':category,'prediction':prediction,'accuracy':accuracy,'fig':fig_div,
+        'value':value}
         return render(request, 'prediction.html', context)
 
 

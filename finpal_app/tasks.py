@@ -120,4 +120,3 @@ def train_stock_model(self,args):
     )
     print(results)
     print("task ended")
-

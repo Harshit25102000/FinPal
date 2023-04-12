@@ -1,13 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Prediction</title>
-</head>
-<body>
-    <h1>{{symbol}}</h1>
-      <h1>{{category}}</h1>
-      <h1>pred-{{prediction}}</h1>
-      <h1>acc-{{accuracy}}</h1>
-</body>
-</html>
+
+
+
+ {% extends 'base2.html' %}
+
+{% block title %} {{symbol}} Prediction {% endblock %}
+
+{% block body %}
+{% load static %}
+
+
+ <div class="container" style="margin-top:90px;margin-bottom: 50px;">
+                <div class="d-flex justify-content-around" style="margin-top:90px;">
+                    <div class="left">
+                        <div class="naming">
+                            <h2 style="font-weight: bold;color:#02147e">{{symbol}}</h2>
+                            <h2>Category : {{category}}</h2>
+                            <h3>Predicted Closing Value: {{value}}</h3>
+                        </div>
+
+
+
+
+
+                    </div>
+
+                    <div class="right" style="width:55%">
+                        <div>
+                            <p style="margin-top:40px;">Predicted with an accuracy of {{accuracy}} %</p>
+                                {{ fig|safe }}
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            {% endblock %}
