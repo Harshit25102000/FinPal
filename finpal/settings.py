@@ -11,10 +11,10 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+PWA_SERVICE_WORKER_PATH = os.path.join(BASE_DIR, 'static/js','serviceworker.js')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -25,8 +25,10 @@ SECRET_KEY = 'django-insecure-!$+p(6lebv$8f_z&we-*cf()52$7h+dhc*qtepjah3$7xfafp2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
+ALLOWED_HOSTS = ['b61c-223-233-84-55.ngrok-free.app','127.0.0.1']
+
+CSRF_TRUSTED_ORIGINS = ['https://b61c-223-233-84-55.ngrok-free.app']
 
 # Application definition
 
@@ -40,6 +42,7 @@ INSTALLED_APPS = [
     'finpal_app.apps.FinpalAppConfig',
 'django_celery_results',
     'django_celery_beat',
+    'pwa',
 
 ]
 
@@ -145,3 +148,35 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 #EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+
+
+
+PWA_APP_NAME = 'FinPal'
+PWA_APP_DESCRIPTION = "Only finace management platform you will ever need"
+PWA_APP_THEME_COLOR = '#02147e'
+PWA_APP_BACKGROUND_COLOR = '#ffffff'
+PWA_APP_DISPLAY = 'standalone'
+PWA_APP_SCOPE = '/'
+PWA_APP_ORIENTATION = 'any'
+PWA_APP_START_URL = '/'
+PWA_APP_STATUS_BAR_COLOR = 'default'
+PWA_APP_ICONS = [
+    {
+        'src': 'static/assets/img/icon-160x160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_ICONS_APPLE = [
+    {
+        'src': 'static/assets/img/icon-160x160.png',
+        'sizes': '160x160'
+    }
+]
+PWA_APP_SPLASH_SCREEN = [
+    {
+        'src': 'static/assets/img/icon.png',
+        'media': '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)'
+    }
+]
+PWA_APP_DIR = 'ltr'
+PWA_APP_LANG = 'en-US'
